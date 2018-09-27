@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public class SimpleTest {
 
-    private static final int OPERATIONS = 120000;
+    private static final int OPERATIONS = 120;
 
     @Test
     public void testFischer() {

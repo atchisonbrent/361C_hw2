@@ -40,7 +40,7 @@ public class PIncrement {
     public static int parallelIncrement(int c, int numThreads) {
 
         /* What to Count to */
-        int m = 120000;
+        int m = 120;
 
         /* Set Initial Value of Counter */
         a.set(c);
