@@ -4,8 +4,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class PIncrement {
 
+    private static int threadCounter;
     private static AtomicInteger a = new AtomicInteger();
-    private static AtomicInteger threadCount = new AtomicInteger();
     private static AtomicInteger X = new AtomicInteger(-1);
     private static AtomicInteger Y = new AtomicInteger(-1);
     private static boolean[] flag = new boolean[0];
@@ -53,7 +53,7 @@ public class PIncrement {
         myThread (int i) { id = i; }
 
         public void run () {
-            while (count < threadCount.get()) {
+            while (count < threadCounter) {
                 requestCS(this.id);
                 releaseCS(this.id);
                 count++;
@@ -73,7 +73,7 @@ public class PIncrement {
 
         /* Set Initial Value of Counter */
         a.set(c);
-        threadCount.set(m / numThreads);
+        threadCounter = m / numThreads;
 
         /* Start Threads in Loop */
         for (int i = 0; i < numThreads; i++) {
