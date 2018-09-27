@@ -58,7 +58,7 @@ public class PIncrement {
         totThreads = numThreads;
 
         /* What to Count to */
-        int m = 120;
+        int m = 120000;
 
         /* Set Initial Value of Counter */
         a.set(c);

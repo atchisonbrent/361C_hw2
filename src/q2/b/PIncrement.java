@@ -69,7 +69,7 @@ public class PIncrement {
         for (int i = 0; i < flag.length; i++) { flag[i] = false; }
 
         /* What to Count to */
-        int m = 120;
+        int m = 120000;
 
         /* Set Initial Value of Counter */
         a.set(c);
