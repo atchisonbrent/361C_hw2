@@ -1,33 +1,60 @@
 package q2.a;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class PIncrement {
 
-    int n;
-    int turn;
-    int delta;
-    static int m = 120000;
+    private static AtomicInteger a = new AtomicInteger();
+    private static AtomicInteger threadCount = new AtomicInteger();
+    private static AtomicInteger turn = new AtomicInteger(-1);
 
-    public PIncrement(int numProc) {
-        n = numProc;
-        turn = -1;
-        delta = 5;
-    }
-
-    public void requestCS(int i) {
+    private static void requestCS(int i) {
         while (true) {
-            while (turn != -1) { /* Wait for door to open */ }
-            turn = i;
-            try { Thread.sleep(delta); }
-            catch (InterruptedException e) { };
-            if (turn == i) { return; }
+            while (turn.get() != -1) { /* Wait for door to open */ }
+            turn.set(i);
+            try { Thread.sleep(0, 10000); }
+            catch (InterruptedException e) { }
+            if (turn.get() == i) { return; }
         }
     }
 
-    public void releaseCS(int i) { turn = -1; }
+    private static void releaseCS() {
+        a.set(a.get() + 1);
+        turn.set(-1);
+    }
+
+    static class myThread extends Thread {
+
+        int count = 0;
+
+        public void run () {
+            while (count < threadCount.get()) {
+                requestCS((int)this.getId());
+                releaseCS();
+                count++;
+            }
+        }
+
+    }
 
     public static int parallelIncrement(int c, int numThreads) {
-        for (; c < m; c++) {  }
-        return c;
+
+        /* What to Count to */
+        int m = 120000;
+
+        /* Set Initial Value of Counter */
+        a.set(c);
+        threadCount.set(m / numThreads);
+
+        /* Start Threads in Loop */
+        for (int i = 0; i < numThreads; i++) {
+            myThread t = new myThread();
+            t.start();
+        }
+
+        while (a.get() != m) { /* Wait until done incrementing */ }
+
+        return a.get();
     }
 
 }
