@@ -7,6 +7,8 @@ import java.util.Random;
 
 public class SimpleTest {
 
+    static int numMonkeys = 1000;
+
     // monkey with different directions can be executed by threads
     class ThreadMonkey implements Runnable {
 
@@ -37,8 +39,8 @@ public class SimpleTest {
 
         Monkey monkey = new Monkey();
 
-        Thread[] threads = new Thread[1000];
-        for (int i = 0; i < 1000; ++i) {
+        Thread[] threads = new Thread[numMonkeys];
+        for (int i = 0; i < numMonkeys; ++i) {
             // all thread monkeys have one same direction
             threads[i] = new Thread(new ThreadMonkey(monkey, 1));
             threads[i].start();
@@ -58,8 +60,8 @@ public class SimpleTest {
 
         Monkey monkey = new Monkey();
 
-        Thread[] threads = new Thread[1000];
-        for (int i = 0; i < 1000; ++i) {
+        Thread[] threads = new Thread[numMonkeys];
+        for (int i = 0; i < numMonkeys; ++i) {
             // random generate some directions 0 or 1
             threads[i] = new Thread(new ThreadMonkey(monkey, (int) Math.round(Math.random())));
             threads[i].start();
@@ -79,14 +81,14 @@ public class SimpleTest {
         Monkey monkey = new Monkey();
 
         // we have 1000 monkeys
-        Thread[] threads = new Thread[1000];
+        Thread[] threads = new Thread[numMonkeys];
 
         // random generate the Kong, only one thread
         Random random = new Random();
-        int kongThreadID = random.nextInt(1000);
+        int kongThreadID = random.nextInt(numMonkeys);
 
         // you need to make sure if Kong is start, the other monkey must stop and clear the rope
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < numMonkeys; ++i) {
             if (i == kongThreadID) threads[i] = new Thread(new ThreadMonkey(monkey, -1));
             else threads[i] = new Thread(new ThreadMonkey(monkey, (int) Math.round(Math.random())));
             threads[i].start();
