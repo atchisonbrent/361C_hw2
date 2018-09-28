@@ -10,8 +10,8 @@ double MonteCarlo(int s)
     int i;
     #pragma omp parallel for reduction(+:totalInnerPoints)
     for(i = 0; i < s; i++) {
-        double x = (double) rand() / RAND_MAX;
-        double y = (double) rand() / RAND_MAX;
+        double x = (double) rand() / (double) RAND_MAX;
+        double y = (double) rand() / (double) RAND_MAX;
         //in this case radius = 1 but wanted to represent actual formula 
         if(x * x + y * y < radius * radius) { 
             totalInnerPoints++;
