@@ -6,14 +6,14 @@ public class PIncrement {
 
     private static int totThreads;
     private static int threadCounter;
-    private static AndersonLock l = new AndersonLock(1);
+    private static AndersonLock l = new AndersonLock(0);
     private static AtomicInteger a = new AtomicInteger();
 
     public static class AndersonLock {
 
         AtomicInteger tailSlot = new AtomicInteger();
         boolean[] available;
-        int mySlot;
+        ThreadLocal<Integer> mySlot = new ThreadLocal<>();
 
         private AndersonLock(int n) {
             available = new boolean[n];
@@ -23,24 +23,23 @@ public class PIncrement {
             }
         }
 
-        public void lock() {
-            mySlot = tailSlot.getAndIncrement() % totThreads;
-            while (!available[mySlot]) { /* Wait */ }
+        private void lock() {
+            mySlot.set(tailSlot.getAndIncrement() % totThreads);
+            while (!available[mySlot.get()]) { /* Wait */ }
         }
 
-        public void unlock() {
+        private void unlock() {
             a.set(a.get() + 1);
-            available[mySlot] = false;
-            available[(mySlot + 1) % totThreads] = true;
+            available[mySlot.get()] = false;
+            available[(mySlot.get() + 1) % totThreads] = true;
         }
     }
 
     static class myThread extends Thread {
 
-        int id;
         int count = 0;
 
-        myThread (int i) { id = i; }
+        myThread () { /* Constructor */ }
 
         public void run () {
             while (count < threadCounter) {
@@ -49,7 +48,6 @@ public class PIncrement {
                 count++;
             }
         }
-
     }
 
     public static int parallelIncrement(int c, int numThreads) {
@@ -66,7 +64,7 @@ public class PIncrement {
 
         /* Start Threads in Loop */
         for (int i = 0; i < numThreads; i++) {
-            myThread t = new myThread(i);
+            myThread t = new myThread();
             t.start();
         }
 
