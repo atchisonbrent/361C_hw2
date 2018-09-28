@@ -81,7 +81,7 @@ public class PIncrement {
             t.start();
         }
 
-        while (a.get() != m) { /* Wait until done incrementing */ }
+        while (a.get() != m + c) { /* Wait until done incrementing */ }
 
         return a.get();
     }
